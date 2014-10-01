@@ -1,0 +1,103 @@
+/* style.css */
+
+/* CSS reset
+ * remove browser defaults
+ */
+html,body,div,h1,h2,h3,h4,h5,ul,li,a,form{
+	margin: 0;
+	padding: 0; 
+}
+
+/* Layout here */
+
+html, body{
+	
+	height: 100%;
+}
+
+.container{
+	/*background-color: orange;*/
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+.canvas{
+	height: 100%;
+	width: 100%;
+}
+
+.canvas, .tooltip, .dev-log, .controls{
+	border: 2px solid black;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.container .controls{
+	position: absolute;
+	width: 80%;
+	height: 80px;
+	background-color: #fff;
+	bottom: 100px;
+	left: 10%;
+
+}
+
+.container .dev-log{
+	position: absolute;
+	top: 0;
+	left: 10%;
+	width: 40%;
+	height: 80px;
+
+}
+
+.container .tooltip{
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	width: 30%;
+	height: 80px;
+
+}
+
+
+.canvas{
+	/*position: absolute;*/
+	/*width: 1000px;*/
+	/*height: 600px;*/
+
+	/*background-color: red;*/
+
+
+}
+
+.tooltip{
+	/*position: absolute;
+	width: 120px;
+	height: 100px;
+	background-color: green;*/
+
+
+}
+
+.dev-log{
+/*
+	width: 200px;
+	height: 100px;
+	background-color: blue;
+	position: absolute;*/
+
+
+}
+
+.controls{
+	/*width: 800px;
+	height: 100px;
+	background-color: yellow;
+	position: absolute;*/
+	/*display: inline;*/
+	/*bottom: 0;*/
+
+
+}

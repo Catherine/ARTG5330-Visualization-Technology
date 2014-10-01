@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Assignment 1</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="canvas"></div>
+			<div class="tooltip"></div>
+			<div class="dev-log"></div>
+			<div class="controls">
+				<form id="myForm">
+					<input id="myRadio" type="radio" name="radio_button" value="radio button">Radio Button<br>
+					<input id="myCheckbox" type="checkbox" name="checkbox" value="Check">This is a checkbox<br>
+					<input id="myText" type="text" name="text" placeholder="Write text here!">
+					<a id="myAnchor" href="">This is our test anchor</a>
+				</form>
+
+				<select id="mySelect">
+					<option value="first select">First</option>
+					<option value="second select">Second</option>
+				    <option value="third select">Third</option>
+				</select>
+
+			</div>
+		</div><!--.container-->
+
+		<script src="js/lib/jquery/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript">
+
+
+			$("#myRadio").on("change", function(e) {
+			    $(".dev-log").append("Radio Button Activated: #myRadio");
+			    console.log("hit myRadio");
+			});
+
+			$("#myCheckbox").on("change", function(e) {
+			    $(".dev-log").append("Checkbox Activated: #myCheckbox");
+			    console.log("hit myCheckbox");
+			});
+
+			$("#myText").on("focus", function(e) {
+				console.log("hit myText");
+			    $(".dev-log").append("Text Box Activated: #myText");
+			});
+
+			$("#myAnchor").on("click", function(e) {
+			    $(".dev-log").append("Radio Button Activated: #myAnchor");
+			    console.log("hit myAnchor");
+			});
+
+			$("#mySelect").on("focus", function(e) {
+			    $(".dev-log").append("Select Activated: #mySelect");
+			    console.log("hit mySelect");
+			});
+
+
+
+
+			// $("body").on("click", function(e){
+			// 	console.log("Document body is clicked");
+			// });
+
+
+
+		</script>
+	</body>
+</html>
