@@ -5,7 +5,7 @@ var y;
 var radius_scale;
 
 //Determine the size of the plot, as well as the margins
-var margin = {t:150,r:150,b:300,l:150};
+var margin = {t:100,r:50,b:100,l:50};
 var width = $('.canvas').width() - margin.l - margin.r;
 var height = $('.canvas').height() - margin.t - margin.b;
 
@@ -63,13 +63,6 @@ d3.csv(
   }
 );
 
-// scale factors
-
-
-
-
-
-
  function draw(rows){
 
   // create axes
@@ -81,32 +74,31 @@ d3.csv(
 
   var yAxis = d3.svg.axis()
     .scale(y)
-    .tickSize(5,0)
+    .tickSize(7,0)
     .orient("left");
 
+  // select all country
+  var countries = svg.selectAll('.country').data(rows, function(d){ return d.country; });
 
-    var countries = svg.selectAll('.country').data(rows, function(d){ return d.country; });
-
-    countries.enter()
-        .append('g')
-        .attr('class', function(d){ return d.country + " country"; });
-    
-    // then filter out the ones that have undefined data (we don't want to plot those points)
-    countries.filter(function(d){
-            return (d.life != undefined && d.literacy != undefined);
-        })
-        // .sort(function(a,b){
-        //     //puts bigger circles at the bottom
-        //     return b.pop - a.pop;
-        // })
-        .attr('transform',function(d){
-            return "translate(" + x(d.life) + "," + y(d.literacy) + ")";
-        })
-        .append('circle')
-        .style('fill', '#21AD94')
-        .attr('r', function(d){ return radius_scale(d.pop); })
-        .append('title')
-        .text( function(d){ return d.country + ": " + d.life});
+  // append g and class based on country name
+  countries.enter()
+      .append('g')
+      .attr('class', function(d){ return d.country + " country"; });
+  
+  // then filter out the ones that have undefined data (we don't want to plot those points)
+  countries.filter(function(d){ return (d.life != undefined && d.literacy != undefined); })
+    .sort(function(a,b){ return b.pop - a.pop; })
+    // place on the plot based on the life and literacy values (scaled)
+    .attr('transform',function(d){
+        return "translate(" + x(d.life) + "," + y(d.literacy) + ")";
+    })
+    .append('circle')
+    .style('fill', '#9F3647')
+    .attr('r', function(d){ return radius_scale(d.pop) * 1.3; })
+    .append('title')
+    .text( function(d){ return d.country + "\n" +
+                               "Life expectancy (years): " + d.life + "\n" +
+                               "Literacy rate: " + d.life + "%"});
 
   //drawing the axes
   svg.append('g')

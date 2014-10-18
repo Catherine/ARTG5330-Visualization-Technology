@@ -4,11 +4,16 @@ html,body,h1,h2,h3,h4,p,div,ul,li,svg{
 	font-size:100%;
 }
 
+@font-face {
+	font-family: 'Museo';
+	src: url("assets/MuseoSans_500.otf") format("opentype");
+}
+
 /*------------Structure-------------*/
 html,body{
 	height: 100%;
 	position: relative;
-	background: #1A4969;
+	background: #272822;
 }
 .container, .container .canvas{
 	position: absolute;
@@ -28,7 +33,7 @@ html,body{
 
 /*------------font-------------*/
 body{
-	font-family:Helvetica,Arial,sans-serif;
+	font-family: 'Museo', Helvetica,Arial,sans-serif;
 	font-size: 16px;
 }
 h1{
@@ -46,6 +51,7 @@ h2{
 	padding: 15px;
 	background: yellow;
 	position: absolute;
+	border-radius: 4px;
 	top:0;
 	opacity:0;
 }
@@ -68,14 +74,30 @@ h2{
 
 /*------------svg-----------------*/
 
+.graph_title{
+	position: fixed;
+	top: 0px;
+	left: 50%;
+	margin-left: -264px;
+	color: #eee;
+	font-size: 16px;
+}
+
 .canvas .axis line, .canvas .axis path{
-    stroke: #fff;
+    stroke: #FB9553;
     stroke-width: 1px;
 }
 .canvas .axis path{
-    stroke-width: 2px;
+    stroke-width: 4px;
 }
 .canvas .axis text{
-    fill: white;
-    font-size: 10px;
+    fill: #FB9553;
+    font-size: 14px;
+}
+
+.canvas .country{
+    fill:rgb(100,100,100);
+    fill-opacity:0.7;
+    stroke: #DB4648;
+    stroke-width: 2px;
 }
