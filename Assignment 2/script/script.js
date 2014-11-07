@@ -50,7 +50,7 @@ d3.csv(
     max_life = d3.max(rows, function(d){ return d.life; });
 
     x = d3.scale.log().range([0,width]).domain([min_life, max_life]);
-    y = d3.scale.linear().range([height,0]).domain([min_literacy, max_literacy]);
+    y = d3.scale.linear().range([height,0]).domain([0, 100]);
     radius_scale = d3.scale.sqrt().domain([0,1.3e9]).range([0,50]);
 
     console.log("min literacy rate: " + min_literacy);
@@ -75,6 +75,7 @@ d3.csv(
   var yAxis = d3.svg.axis()
     .scale(y)
     .tickSize(7,0)
+    //.tickValues([40, 50, 100])
     .orient("left");
 
   // select all country
@@ -98,7 +99,7 @@ d3.csv(
     .append('title')
     .text( function(d){ return d.country + "\n" +
                                "Life expectancy (years): " + d.life + "\n" +
-                               "Literacy rate: " + d.life + "%"});
+                               "Literacy rate: " + d.literacy + "%"});
 
   //drawing the axes
   svg.append('g')
