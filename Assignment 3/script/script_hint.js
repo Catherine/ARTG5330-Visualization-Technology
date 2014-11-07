@@ -87,7 +87,7 @@ function draw(data){
         })
         .attr('width',function(d){return d.dx})
         .attr('height',function(d){return d.dy})
-        .style('fill','none')
+        .style('fill','red')
         .style('stroke-width',"1px")
         .style('stroke','white');
 

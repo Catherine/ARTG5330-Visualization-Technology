@@ -1,12 +1,13 @@
-//Assignment 3
-//Due Wednesday November 7 at 5:00PM
+// Catherine Patchell
+// ARTG 5330 Visualization Technology
+// Assignment 3 - Treemaps
 
 var margin = {t:100,r:100,b:200,l:150},
     width = $('.canvas').width() - margin.l - margin.r,
     height = $('.canvas').height() - margin.t - margin.b;
 
 
-//Set up SVG drawing elements -- already done
+//Set up SVG drawing elements
 var svg = d3.select('.canvas')
     .append('svg')
     .attr('width', width + margin.l + margin.r)
@@ -21,7 +22,6 @@ var scales = {};
 
 
 //Global variables
-//TODO: use these variables in lieu of strings
 var yVariable = "CO2 emissions (kt)",
     y0 = 1997,
     y1 = 2010;
@@ -32,15 +32,15 @@ var metaDataMap = d3.map();
 
 //TODO: create a layout function for a treemap
 var treemap = d3.layout.treemap()
+    .size([width,height])
     .children(function(d){
         return d.values;
     })
     .value(function(d){
         return d.data.get(1997);
-    })
-    .size([width,height])
-    .sticky(true)         //extra added during class
-    .padding(5, 5, 5, 5); //extra added during class
+    });
+    //.sticky(true)         //sticky treemap layout will preserve the relative arrangement of nodes across transitions
+    //.padding(5, 5, 5, 5); //set the padding for each treemap cell, in pixels
 
 
 
@@ -61,12 +61,14 @@ function dataLoaded(err, rows, metadata){
         .key(function(d){
             return d.region;
         })
-        .entries(rows)
+        .entries(rows);
 
-    var root = {
+    var treeMapData = treemap({
         key: "regions",
         values: data
-    };
+    });
+
+    //console.log(data);
 
     //Then create hierarchy based on regions
 
@@ -74,10 +76,24 @@ function dataLoaded(err, rows, metadata){
 
     //TODO: let's now layout the data
 
-    //draw(treeMapData);
+    draw(treeMapData);
 }
 
 function draw(data){
+    svg.selectAll('.node')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('class',"node")
+        .attr('transform',function(d){
+            return "translate("+d.x+','+d.y+')';
+        })
+        .attr('width',function(d){return d.dx})
+        .attr('height',function(d){return d.dy})
+        .style('fill','red')
+        .style('stroke-width',"1px")
+        .style('stroke','white');
+
     
 }
 
@@ -85,13 +101,13 @@ function parse(d){
     var newRow = {
         key: d["Country Name"],
         series: d["Series Name"],
-        data:d3.map()
+        data: d3.map()
     };
-    for(var i=1990; i<=2013; i++){
+    for(var i=1990; i <= 2013; i++){
         var heading = i + " [YR" + i + "]";
         newRow.data.set(
             i,
-            (d[heading]=="..")?0:+d[heading]
+            (d[heading] == ".." ) ? 0 : +d[heading]
         );
     }
 
