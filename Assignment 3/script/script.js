@@ -2,12 +2,16 @@
 // ARTG 5330 Visualization Technology
 // Assignment 3 - Treemaps
 
-var margin = {t:100,r:100,b:200,l:150},
+var paddingVal = 25;
+var yVariable = "CO2 emissions (kt)";
+var y0 = 1997;
+var y1 = 2010;
+
+var margin = {t:80, r:paddingVal, b:100, l:paddingVal},
     width = $('.canvas').width() - margin.l - margin.r,
     height = $('.canvas').height() - margin.t - margin.b;
 
-
-//Set up SVG drawing elements
+//Set up SVG drawing elements -- already done
 var svg = d3.select('.canvas')
     .append('svg')
     .attr('width', width + margin.l + margin.r)
@@ -20,63 +24,44 @@ var scales = {};
     scales.x = d3.scale.log().range([0,width]);
     scales.y = d3.scale.linear().range([height,0]);
 
-
-//Global variables
-var yVariable = "CO2 emissions (kt)",
-    y0 = 1997,
-    y1 = 2010;
-
-
 //d3.map for metadata
 var metaDataMap = d3.map();
 
-//TODO: create a layout function for a treemap
+//create a layout function using d3.layout.treemap()
 var treemap = d3.layout.treemap()
-    .size([width,height])
+    .size([width, height])
     .children(function(d){
         return d.values;
     })
     .value(function(d){
-        return d.data.get(1997);
-    });
-    //.sticky(true)         //sticky treemap layout will preserve the relative arrangement of nodes across transitions
-    //.padding(5, 5, 5, 5); //set the padding for each treemap cell, in pixels
+        return d.data.get(y0);
+    })
+    .sticky(true)//;         //sticky treemap layout will preserve the relative arrangement of nodes across transitions
+    .padding(5, 5, 5, 5); //set the padding for each treemap cell, in pixels
 
-
-
-//START!
 queue()
     .defer(d3.csv, "data/00fe9052-8118-4003-b5c3-ce49dd36eac1_Data.csv",parse)
     .defer(d3.csv, "data/metadata.csv", parseMetaData)
     .await(dataLoaded);
 
 function dataLoaded(err, rows, metadata){
-    //TODO: consolidate data and meta data into the same object
-
-    rows.forEach(function(rows){
-        row.region = metaDataMap.get(row.key);  //row.key is country name
-    })
-
-    var data = d3.nest()  // nest to create heirarchy based on the region attribute
-        .key(function(d){
-            return d.region;
-        })
-        .entries(rows);
-
-    var treeMapData = treemap({
-        key: "regions",
-        values: data
+    //consolidate data and meta data into the same object
+    rows.forEach(function(row){
+        row.region = metaDataMap.get(row.key);
     });
 
-    //console.log(data);
+    //create hierarchy based on regions
+    var nestedData = d3.nest()
+        .key(function(d){ return d.region; })
+        .entries(rows);
 
-    //Then create hierarchy based on regions
+    console.log(nestedData);
 
-    //TODO: create a layout function using d3.layout.treemap() at the top of the program
+    var summedData = treemap({ key: "regions", values: nestedData });
 
-    //TODO: let's now layout the data
+    //console.log(summedData);
 
-    draw(treeMapData);
+    draw(summedData);
 }
 
 function draw(data){
@@ -84,38 +69,61 @@ function draw(data){
         .data(data)
         .enter()
         .append('rect')
-        .attr('class',"node")
-        .attr('transform',function(d){
-            return "translate("+d.x+','+d.y+')';
-        })
-        .attr('width',function(d){return d.dx})
-        .attr('height',function(d){return d.dy})
-        .style('fill','red')
-        .style('stroke-width',"1px")
-        .style('stroke','white');
+        .attr('class', function(d){ 
+            var assignRegion = "undefined_region";
+            var setClass = d.region;
+            console.log("region is: " + d.region);
 
-    
+            if(setClass == "Latin America & Caribbean"){
+                    assignRegion = "la_c";
+                }else if (setClass == "North America"){
+                    assignRegion = "na";
+                }else if (setClass == "Europe & Central North Africa"){
+                    assignRegion = "ecna";
+                }else if (setClass == "Middle East & North Africa"){
+                    assignRegion = "mena";
+                }else if (setClass == "East Asia & Pacific"){
+                    assignRegion = "eap";
+                }else if (setClass == "South Asia"){
+                    assignRegion = "sa";
+                }else if (setClass == "Europe & Central Asia"){
+                    assignRegion = "eca";
+                }else if (setClass == "Sub-Saharan Africa"){
+                    assignRegion = "ssa";
+                }
+
+            return d.children ? "region" : "country "+assignRegion; })
+        .attr('width', function(d){ return d.dx })
+        .attr('height', function(d){ return d.dy })
+        .attr('transform', function(d){ return "translate(" + d.x + ',' + d.y + ')'; })
+        //.append('title')
+        .text( function(d){ return d.children ? d.key : d.key; })//return d.region + "\n" + "CO2 emissions " + d.life})
+        //.style('fill','none')
+        //.style('stroke-width',"1px")
+        //.style('stroke','white')
+        ;
+
+
 }
 
 function parse(d){
     var newRow = {
         key: d["Country Name"],
         series: d["Series Name"],
-        data: d3.map()
+        data: d3.map() //set data field as a d3.map so we can add all the values for each of the years
     };
-    for(var i=1990; i <= 2013; i++){
-        var heading = i + " [YR" + i + "]";
-        newRow.data.set(
-            i,
-            (d[heading] == ".." ) ? 0 : +d[heading]
-        );
-    }
 
+    //populating the d3.map() for each year
+    for(var i = y0; i <= y1; i++){
+        //create a string based on the year to find in csv
+        var yearHeading = i + " [YR" + i + "]";
+        //set the data as value from corresponding yearHeading in csv
+        newRow.data.set(i, (d[yearHeading] == "..") ? 0 : +d[yearHeading]);
+    }
     return newRow;
 }
 
 function parseMetaData(d){
-    //TODO: we would like to put metadata into a map structure
     var countryName = d["Table Name"];
     var region = d["Region"];
     metaDataMap.set(countryName, region);

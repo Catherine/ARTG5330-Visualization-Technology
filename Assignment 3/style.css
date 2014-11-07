@@ -8,7 +8,7 @@ html,body,h1,h2,h3,h4,p,div,ul,li,svg{
 html,body{
 	height: 100%;
 	position: relative;
-	background: rgb(50,50,50);
+	background: #332D27;
 }
 .container,
 .container .canvas{
@@ -20,12 +20,9 @@ html,body{
     overflow:hidden;
 }
 .container .control{
-	height:60px;
-	width: 500px;
-	left: 50%;
-	bottom: 50px;
+	right: 25px;
+	bottom: 25px;
 	position: absolute;
-	margin-left: -250px;
 }
 
 /*------------font-------------*/
@@ -39,10 +36,18 @@ h1{
 }
 h2{
 	font-size:1.5em;
-	margin: 0 0 20px;
+	/*margin: 0 0 20px;*/
 }
 h3{
     font-size: 0.8em;
+}
+
+h2{
+    margin: 25px 0px 0px 30px; 
+    font-family: 'Helvetica Neue', Helvetica, Arial;
+    font-weight: 300;
+    color: #FAE1C0;
+    position: fixed;
 }
 
 /*------------tooltip-------------*/
@@ -83,17 +88,16 @@ h3{
 }
 
 /*------------svg-----------------*/
-.canvas .country{
-    fill:rgb(100,100,100);
-    fill-opacity:0.9;
-    stroke:#fff;
-    stroke-width:1.5px;
+.country{
+    fill-opacity: 0.7;
+    stroke: #FAE1C0;
+    stroke-width: 2px;
 }
 .canvas .country:hover{
-    fill-opacity:1;
+    fill-opacity: .9;
     stroke-width:2.5px;
 }
-.canvas .axis line,
+/*.canvas .axis line,
 .canvas .axis path{
     stroke:rgb(120,120,120);
     stroke-width:1px;
@@ -104,4 +108,46 @@ h3{
 .canvas .axis text{
     fill:white;
     font-size:12px;
+}*/
+
+.country{
+    stroke-width: 1px;
 }
+
+.la_c{
+    fill: #8A0015;
+}
+
+.ecna{
+  fill: #85725F;
+}
+
+.na{
+    fill: #E30224;
+}
+
+.mena{
+    fill: #FAD66C;
+
+}
+
+.eap{
+    fill: #338982;
+
+}
+
+.sa{
+    fill: #EA6F39;
+
+}
+
+.eca{
+    fill: #966F81;
+}
+
+.ssa{
+    fill: #8A9E63;
+
+}
+
+
