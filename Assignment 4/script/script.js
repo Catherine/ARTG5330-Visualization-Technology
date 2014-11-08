@@ -9,11 +9,14 @@ var svg = d3.select('.canvas')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-//TODO: create a mercator projection function
-//var projection = ...
+var colorScale = d3.scale.linear().domain([0, 0.2]).range(['white', 'green']);
 
-//TODO: create a geo path generator function, with an appropriate projection
-//var path = ...
+var projection = d3.geo.mercator()
+    .translate([width/2, height/2])
+    .scale(180);
+
+var path = d3.geo.path()
+    .projection(projection);
 
 //import data
 queue()
@@ -21,7 +24,9 @@ queue()
     .defer(d3.csv, "data/airports-utf.csv", function(d){
         return {
             IATA: d.iata,
-            lngLat: [+d.lng, +d.lat]
+            lng: +d.lng,
+            lat: +d.lat
+            //lngLat: [+d.lng, +d.lat]
         }
     })
 	.await(function(err, world, airports){
@@ -32,16 +37,27 @@ queue()
 
 function draw(world,airports){
     console.log(world);
-    //world data is in the Topojson specification
-    //TODO: read topojson specification and usage here
-    //https://github.com/mbostock/topojson/wiki/API-Reference
-    //especially topojson.feature and topojson.mesh
 
-    //TODO: draw country boundaries
+    svg.append('path')
+        .datum(topojson.mesh(world, world.objects.countries))
+        .attr('d',path)
+        .attr('class','country')
 
-    //TODO: draw land boundaries, with a thicker stroke
+    svg.append('path')
+        .datum(topojson.feature(world, world.objects.land))
+        .attr('d',path)
+        .attr('class','land');
 
-    //TODO: draw airports as circles
+    svg.selectAll('.airport')
+        .data(airports)
+        .enter()
+        .append('circle')
+        .attr('class','airport')
+        .attr('transform',function(d){
+           var xy = projection([d.lng, d.lat]);
+           return 'translate('+xy[0]+','+xy[1]+')'
+        })
+        .attr('r',1);
 
 
 }

@@ -21,6 +21,7 @@ html,body{
 	height: 800px;
 	top: 0;
 	position: relative;
+	padding-top: 45px;
 }
 .container .control{
 	height:40px;
@@ -29,17 +30,24 @@ html,body{
 
 /*------------font-------------*/
 body{
-	font-family: 'Open Sans Condensed', sans-serif;
+	font-family: 'Helvetica Neue', 'Helvetica', 'Open Sans Condensed', sans-serif;
 	font-size: 16px;
 }
 h1{
 	font-size: 1.8em;
-	margin: 30px 0 10px;
 	text-align:center;
+	font-weight: 300;
+	background-color: rgba(1,1,1, 0.6);
+	padding: 25px 0px;
+	position: fixed;
+	width: 100%;
+	left: 0;
+	z-index: 100;
 }
 h2{
 	font-size:1.3em;
 	margin: 0 0 5px;
+
 }
 
 /*------------tooltip-------------*/
@@ -68,15 +76,15 @@ h2{
 
 /*------------svg-----------------*/
 .canvas .country{
-	fill:rgb(50,50,50);
-	stroke:#fff;
-	stroke-width:.5px;
+	fill: rgb(50,50,50);
+	stroke: #fff;
+	stroke-width: .5px;
 }
 .canvas .land{
-    fill:none;
-    stroke:#fff;
-    stroke-width:1px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1px;
 }
 .canvas .airport{
-    fill:orange;
+    fill: yellow;
 }
