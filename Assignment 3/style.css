@@ -21,7 +21,7 @@ html,body{
 }
 .container .control{
 	right: 25px;
-	bottom: 25px;
+	bottom: 30px;
 	position: absolute;
 }
 
@@ -97,57 +97,104 @@ h2{
     fill-opacity: .9;
     stroke-width:2.5px;
 }
-/*.canvas .axis line,
-.canvas .axis path{
-    stroke:rgb(120,120,120);
-    stroke-width:1px;
-}
-.canvas .axis path{
-    stroke-width:2px;
-}
-.canvas .axis text{
-    fill:white;
-    font-size:12px;
-}*/
 
 .country{
     stroke-width: 1px;
 }
 
+/* Latin America & Caribbean */
 .la_c{
     fill: #8A0015;
+    background-color: #8A0015;
 }
 
+/* Europe & Central North Africa */
 .ecna{
   fill: #85725F;
+  background-color: #85725F;
 }
 
+/* North America */
 .na{
     fill: #E30224;
+    background-color: #E30224;
 }
 
+/* Middle East & North Africa */
 .mena{
     fill: #FAD66C;
-
+    background-color: #FAD66C;
 }
 
+/* East Asia & Pacific */
 .eap{
     fill: #338982;
-
+    background-color: #338982;
 }
 
+/* South Asia */
 .sa{
     fill: #EA6F39;
+    background-color: #EA6F39;
 
 }
-
+/* Europe & Central Asia */
 .eca{
     fill: #966F81;
+    background-color: #966F81;
 }
 
+/* Sub-Saharan Africa */
 .ssa{
     fill: #8A9E63;
-
+    background-color: #8A9E63;
 }
+
+/* May Key at Botton */
+#map_key{
+    position: fixed;
+    height: 90px;
+    width: 400px;
+    bottom: 0;
+    left: 25px;
+    background-color: rgba(0, 0, 0, .4);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    font-size: 12px;
+}
+
+#map_key table{
+    margin:auto;
+    margin-top: 5px;
+    color: white;
+}
+
+td{
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+
+
+.color_swatch{
+    padding: 2px;
+    height: 5px;
+    width: 13px;
+}
+
+.footer_credit{
+    position:fixed; 
+    bottom: 0; 
+    right: 25px; 
+    color: white;
+    font-weight: 300;
+}
+
+
+
+
+
+
+
 
 

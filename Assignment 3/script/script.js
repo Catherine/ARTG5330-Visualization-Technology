@@ -36,7 +36,7 @@ var treemap = d3.layout.treemap()
     .value(function(d){
         return d.data.get(y0);
     })
-    .sticky(true)//;         //sticky treemap layout will preserve the relative arrangement of nodes across transitions
+    .sticky(true)         //sticky treemap layout will preserve the relative arrangement of nodes across transitions
     .padding(5, 5, 5, 5); //set the padding for each treemap cell, in pixels
 
 queue()
@@ -55,25 +55,28 @@ function dataLoaded(err, rows, metadata){
         .key(function(d){ return d.region; })
         .entries(rows);
 
-    console.log(nestedData);
-
     var summedData = treemap({ key: "regions", values: nestedData });
-
-    //console.log(summedData);
 
     draw(summedData);
 }
+
+$('.control #first').on('click', function(e){
+    draw(treemap.value( function(d){ return d.data.get(y0); }))
+});
+
+$('.control #second').on('click', function(e){
+    draw(treemap.value( function(d){ return d.data.get(y1); }))
+});
 
 function draw(data){
     svg.selectAll('.node')
         .data(data)
         .enter()
         .append('rect')
+        // .transition()
         .attr('class', function(d){ 
             var assignRegion = "undefined_region";
             var setClass = d.region;
-            console.log("region is: " + d.region);
-
             if(setClass == "Latin America & Caribbean"){
                     assignRegion = "la_c";
                 }else if (setClass == "North America"){
@@ -91,19 +94,12 @@ function draw(data){
                 }else if (setClass == "Sub-Saharan Africa"){
                     assignRegion = "ssa";
                 }
-
             return d.children ? "region" : "country "+assignRegion; })
         .attr('width', function(d){ return d.dx })
         .attr('height', function(d){ return d.dy })
         .attr('transform', function(d){ return "translate(" + d.x + ',' + d.y + ')'; })
-        //.append('title')
         .text( function(d){ return d.children ? d.key : d.key; })//return d.region + "\n" + "CO2 emissions " + d.life})
-        //.style('fill','none')
-        //.style('stroke-width',"1px")
-        //.style('stroke','white')
         ;
-
-
 }
 
 function parse(d){
@@ -112,7 +108,6 @@ function parse(d){
         series: d["Series Name"],
         data: d3.map() //set data field as a d3.map so we can add all the values for each of the years
     };
-
     //populating the d3.map() for each year
     for(var i = y0; i <= y1; i++){
         //create a string based on the year to find in csv
