@@ -9,8 +9,6 @@ var svg = d3.select('.canvas')
     .append('g')
     .attr('transform',"translate("+margin.l+","+margin.t+")");
 
-var colorScale = d3.scale.linear().domain([0, 0.2]).range(['white', 'green']);
-
 var projection = d3.geo.mercator()
     .translate([width/2, height/2])
     .scale(180);
@@ -26,7 +24,6 @@ queue()
             IATA: d.iata,
             lng: +d.lng,
             lat: +d.lat
-            //lngLat: [+d.lng, +d.lat]
         }
     })
 	.await(function(err, world, airports){
@@ -35,29 +32,28 @@ queue()
 		draw(world,airports);
 	})
 
+//draw the world, country, and airpoint points on the canvas
 function draw(world,airports){
     console.log(world);
 
     svg.append('path')
         .datum(topojson.mesh(world, world.objects.countries))
-        .attr('d',path)
-        .attr('class','country')
+        .attr('d', path)
+        .attr('class', 'country')
 
     svg.append('path')
         .datum(topojson.feature(world, world.objects.land))
-        .attr('d',path)
-        .attr('class','land');
+        .attr('d', path)
+        .attr('class', 'land');
 
     svg.selectAll('.airport')
         .data(airports)
         .enter()
         .append('circle')
-        .attr('class','airport')
-        .attr('transform',function(d){
-           var xy = projection([d.lng, d.lat]);
-           return 'translate('+xy[0]+','+xy[1]+')'
-        })
-        .attr('r',1);
-
-
+        .attr('class', 'airport')
+        .attr('r',1)
+        .attr('transform', function(d){
+           var proj = projection([d.lng, d.lat]);
+           return 'translate('+proj[0]+','+proj[1]+')'
+        });
 }
