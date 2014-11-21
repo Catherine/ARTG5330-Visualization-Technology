@@ -1,18 +1,23 @@
-var margin = {t:100,l:100,b:100,r:100},
+var canvas_padding = 50;
+
+var margin = {t:canvas_padding, l:canvas_padding, b:canvas_padding, r:canvas_padding},
     width = $('.canvas').width()-margin.l-margin.r,
     height = $('.canvas').height()-margin.t-margin.b;
 
 var svg = d3.select('.canvas')
     .append('svg')
-    .attr('width',width+margin.l+margin.r)
-    .attr('height',height+margin.t+margin.b)
+    .attr('width', width + margin.l + margin.r)
+    .attr('height', height + margin.t + margin.b)
     .append('g')
-    .attr('transform',"translate("+margin.l+","+margin.t+")");
+    .attr('transform', "translate(" + margin.l + "," + margin.t + ")");
 
 //Variables to hold nodes and links data
-var dataByState = d3.map(),
-    latLngByState = d3.map();
-var nodes = [], links = [];
+var dataByState = d3.map();
+var latLngByState = d3.map();
+var nodes = [];
+var links = [];
+var states;
+var connections;
 
 //scales
 var scale = {};
@@ -20,12 +25,17 @@ scale.nodeSize = d3.scale.sqrt().domain([0,3e7]).range([0,35]);
 scale.linkStroke = d3.scale.linear().domain([0,30000]).range([0,10]);
 scale.linkStrength = d3.scale.linear().domain([0,80000]).range([0,1]);
 
-//TODO: write a force layout, with 0 gravity, -200 charge, and .1 friction
-var force = d3.layout.force();
+var force = d3.layout.force()
+    .size([width, height])
+    .friction(0.1)     //velocity decay
+    .gravity(0)
+    .charge(-200);      //negative value => repulsion
+    //.linkDistance(200) //weak geometric constraint
+    //.linkStrength(0.1);
 
-//TODO: write a d3.geo.albersUsa projection function,
-//TODO: don't forget setting .translate()
-var projection;
+var projection = d3.geo.albersUsa()
+    .translate([width/2, height/2])
+    .scale(1200);
 
 
 //import and parse data
@@ -34,28 +44,20 @@ queue()
     .defer(d3.csv, "data/state_latlon.csv", parseLatLng)
 	.await(function(err, states){
 
-        //TODO: look carefully at the content of these three variables to see how they are related
-        console.log(dataByState);
-        console.log(latLngByState);
-        console.log(links);
-
-        //TODO: links array does not yet have "source" and "target"
-        //Use this iterative loop to set source and target
-        //hint: link.o is the name of the "source" state
-        //since dataByState is a d3.map()
-        //you can use dataByState.get(link.o) to find the element in the nodes array
         links.forEach(function(link){
             link.source = dataByState.get(link.o);
             link.target = dataByState.get(link.d);
         })
 
-        //TODO: we need to assign an initial x and y value for each node
         nodes = dataByState.values();
+
         nodes.forEach(function(node){
+            var x = projection(latLngByState.get(node.state))[0];
+            var y = projection(latLngByState.get(node.state))[1];
+            node.x = x;
+            node.y = y;
         });
 
-
-        //start force layout
         force
             .nodes(nodes)
             .links(links)
@@ -66,19 +68,54 @@ queue()
     });
 
 function draw(){
-    //TODO: write the code to bind data to DOM elements
+
+    states = svg.selectAll('.state')
+        .data(nodes)
+        .enter()
+        .append('g')
+        .attr('class','state')
+        .append('circle')
+        .attr('r',function(d){ 
+            return scale.nodeSize(d.population); 
+        });
+
+    connections = svg.selectAll('.connection')
+        .data(links)
+        .enter()
+        .append('line')
+        .attr('class','connection')
+        // .style('stroke-width',function(d){
+        //     return scale.linkStroke(d.v) + 'px';
+        // });
+        .style('stroke-width', '1px');
+
+        // force
+        //     //.nodes(nodes)
+        //     //.links(links)
+        //     .on('tick', onTick)
+        //     .start();
+
 }
 
 function onTick(e){
-    //TODO: write the onTick function
-    //hint: here you are supposed to set the visual attributes of DOM elements
+    
+    states.attr('transform', function(d){ 
+        console.log('d.x: '+ d.x);
+        console.log('d.y: ' + d.y);
+        return 'translate('+ d.x + ',' + d.y + ')'; 
+    });
 
+    connections
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 }
 
 function parseData(d){
     dataByState.set(d.State, {
         state: d.State,
-        pop: +(d["Total population"].replace(/[ ,]/g,"")),
+        population: +(d["Total population"].replace(/[ ,]/g,"")),
         diffState: +(d["Different state a year ago, total"].replace(/[ ,]/g,"")),
         foreign: +(d["Outside the US a year ago, total"].replace(/[ ,]/g,""))
     });
