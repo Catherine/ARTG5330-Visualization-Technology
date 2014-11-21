@@ -16,7 +16,7 @@ var dataByState = d3.map();
 var latLngByState = d3.map();
 var nodes = [];
 var links = [];
-var states;
+var states_data;
 var connections;
 
 //scales
@@ -29,20 +29,22 @@ var force = d3.layout.force()
     .size([width, height])
     .friction(0.1)     //velocity decay
     .gravity(0)
-    .charge(-200);      //negative value => repulsion
-    //.linkDistance(200) //weak geometric constraint
-    //.linkStrength(0.1);
+    .charge(-200)//;      //negative value => repulsion
+    .linkStrength(0);
 
 var projection = d3.geo.albersUsa()
     .translate([width/2, height/2])
     .scale(1200);
 
+var path = d3.geo.path()
+    .projection(projection);
 
 //import and parse data
 queue()
+    .defer(d3.json, "data/gz_2010_us_040_00_5m.json")
     .defer(d3.csv, "data/State_to_State_Migrations_Table_2012_clean.csv", parseData)
     .defer(d3.csv, "data/state_latlon.csv", parseLatLng)
-	.await(function(err, states){
+    .await(function(err, states){
 
         links.forEach(function(link){
             link.source = dataByState.get(link.o);
@@ -52,10 +54,8 @@ queue()
         nodes = dataByState.values();
 
         nodes.forEach(function(node){
-            var x = projection(latLngByState.get(node.state))[0];
-            var y = projection(latLngByState.get(node.state))[1];
-            node.x = x;
-            node.y = y;
+            node.x = projection(latLngByState.get(node.state))[0];
+            node.y = projection(latLngByState.get(node.state))[1];
         });
 
         force
@@ -64,45 +64,41 @@ queue()
             .on('tick', onTick)
             .start();
 
-        draw()
+        draw(states)
     });
 
-function draw(){
+function draw(states){
 
-    states = svg.selectAll('.state')
-        .data(nodes)
-        .enter()
-        .append('g')
+    console.log(states);
+
+    svg.append('path')
         .attr('class','state')
-        .append('circle')
-        .attr('r',function(d){ 
-            return scale.nodeSize(d.population); 
-        });
+        .datum(states)
+        .attr('d',path);
 
     connections = svg.selectAll('.connection')
         .data(links)
         .enter()
         .append('line')
         .attr('class','connection')
-        // .style('stroke-width',function(d){
-        //     return scale.linkStroke(d.v) + 'px';
-        // });
         .style('stroke-width', '1px');
 
-        // force
-        //     //.nodes(nodes)
-        //     //.links(links)
-        //     .on('tick', onTick)
-        //     .start();
-
+    states_data = svg.selectAll('.state_loc')
+        .data(nodes)
+        .enter()
+        .append('g')
+        .attr('class','state_loc')
+        .append('circle')
+        .attr('r',function(d){ 
+            return scale.nodeSize(d.population); 
+        });
 }
 
 function onTick(e){
-    
-    states.attr('transform', function(d){ 
-        console.log('d.x: '+ d.x);
-        console.log('d.y: ' + d.y);
-        return 'translate('+ d.x + ',' + d.y + ')'; 
+
+    svg.selectAll('.state_loc')
+        .attr('transform', function(d){ 
+            return 'translate('+ d.x + ',' + d.y + ')'; 
     });
 
     connections

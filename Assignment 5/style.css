@@ -72,8 +72,8 @@ h2{
 	stroke-width:.5px;
 }
 
-.canvas .state{
-	fill:rgb(50,50,50);
+.canvas .state_loc{
+	fill: transparent;
 	stroke:#fff;
 	stroke-width:1.5px;
 }
@@ -84,9 +84,15 @@ h2{
     fill:none;
 }
 
-.canvas .link{
+.canvas .connection{
     fill:none;
     stroke:#fff;
     stroke-width:1px;
     opacity:0.1;
+}
+
+.canvas .state{
+	fill: none;
+	stroke: #fff;
+	stroke-width: 1px;
 }
