@@ -21,7 +21,7 @@ html,body{
 	height: 800px;
 	top: 0;
 	position: relative;
-	padding-top: 45px;
+	padding-top: 85px;
 }
 .container .control{
 	height:40px;
@@ -38,7 +38,7 @@ h1{
 	text-align:center;
 	font-weight: 300;
 	background-color: rgba(1,1,1, 0.6);
-	padding: 25px 0px;
+	padding: 15px 0px;
 	position: fixed;
 	width: 100%;
 	left: 0;
